@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 export function MagicCard({
   children,
   className,
+  secondDivClassName,
   gradientSize = 200,
   gradientColor = "#262626",
   gradientOpacity = 0.8,
@@ -41,7 +42,7 @@ export function MagicCard({
         "group relative flex size-full overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-900 border-[1px] border-[#363636] text-black dark:text-white",
         className
       )}>
-      <div className="relative z-10">{children}</div>
+      <div className={`relative z-10 ${secondDivClassName}`}>{children}</div>
       <motion.div
         className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{

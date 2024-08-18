@@ -12,15 +12,8 @@ import Tailwind from "@/../public/icons/tailwind.svg";
 import Firebase from "@/../public/icons/firebase.svg";
 import Redux from "@/../public/icons/redux.svg";
 
-export function Skills() {
-  const containerRef = useRef(null);
-  const reactRef = useRef(null);
-  const nextRef = useRef(null);
-  const flutterRef = useRef(null);
-  const tailwindRef = useRef(null);
-  const firebaseRef = useRef(null);
-  const reduxRef = useRef(null);
-  const skillRef = useRef(null);
+export function Skills({ containerRef, reactRef, nextRef, flutterRef, tailwindRef, firebaseRef, reduxRef, skillRef }) {
+  
 
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });

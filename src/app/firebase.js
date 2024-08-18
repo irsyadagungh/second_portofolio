@@ -18,7 +18,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+export const firestore = getFirestore(app);
 export const storage = getStorage(app);
 
 // Initialize Analytics if supported and in client environment
@@ -33,4 +33,4 @@ if (typeof window !== "undefined") {
 }
 
 export { analytics };
-export default db;
+export default firestore;

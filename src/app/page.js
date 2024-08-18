@@ -14,6 +14,16 @@ import { Skills } from "@/components/section/skills-section";
 import { Projects } from "@/components/section/project-section";
 
 export default function Home() {
+
+  const containerRef = useRef(null);
+  const reactRef = useRef(null);
+  const nextRef = useRef(null);
+  const flutterRef = useRef(null);
+  const tailwindRef = useRef(null);
+  const firebaseRef = useRef(null);
+  const reduxRef = useRef(null);
+  const skillRef = useRef(null);
+
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
   const [totalProjects, setTotalProjects] = useState(0);
@@ -100,7 +110,16 @@ export default function Home() {
       <About />
 
       {/** SECTION 3 (SKILLS) */}
-      <Skills />
+      <Skills
+      containerRef={containerRef}
+      reactRef={reactRef}
+      nextRef={nextRef}
+      flutterRef={flutterRef}
+      tailwindRef={tailwindRef}
+      firebaseRef={firebaseRef}
+      reduxRef={reduxRef}
+      skillRef={skillRef}
+      />
 
       {/** SECTION 4 (PROJECTS) */}
       <Projects onTotalProjectsChange={handleTotalProjects} />

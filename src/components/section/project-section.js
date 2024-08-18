@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { db } from "@/../../src/app/firebase";
+import { firestore } from "@/../../src/app/firebase";
 import {
   collection,
   getDocs,
@@ -24,7 +24,7 @@ export function Projects({ onTotalProjectsChange }) {
 
   useEffect(() => {
     try {
-      const reff = collection(db, "projects");
+      const reff = collection(firestore, "projects");
       const queries = query(reff, limit(3));
       const fetchData = async () => {
         onSnapshot(queries, (document) => {
@@ -47,7 +47,7 @@ export function Projects({ onTotalProjectsChange }) {
     }
 
     const handleTotalProject = async () => {
-      const reff = collection(db, "projects");
+      const reff = collection(firestore, "projects");
       const querySnapshot = await getDocs(reff);
       const total = querySnapshot.size;
       setTotalProjects(total);

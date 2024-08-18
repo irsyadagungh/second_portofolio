@@ -1,26 +1,38 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isActivePath, setIsActivePath] = useState("");
+  const router = usePathname();
 
-  // Effect to track window size and determine if it is mobile
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
 
-    handleResize(); // Set initial state
+    handleResize();
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    setIsActivePath(router);
+  }, [router]);
+
+  const getLinkClass = (path) => {
+    return isActivePath === path
+      ? "text-primary relative after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-primary after:transition-all after:duration-300"
+      : "text-white relative after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full";
+  };
 
   const transitionVariants = {
     closed: {
@@ -72,18 +84,43 @@ function Navbar() {
             md:flex-row md:text-base md:flex md:gap-6`}
           >
             <li>
-              <Link href="/" onClick={() => {
-                if (isMobile == true) {
-                  setIsOpen(!isOpen)
-                }
-              }}>Home</Link>
+              <Link
+                className={getLinkClass("/")}
+                href="/"
+                onClick={() => {
+                  if (isMobile == true) {
+                    setIsOpen(!isOpen);
+                  }
+                }}
+              >
+                Home
+              </Link>
             </li>
             <li>
-              <Link href="/projects" onClick={() => {
-                if (isMobile == true) {
-                  setIsOpen(!isOpen)
-                }
-              }}>Projects</Link>
+              <Link
+                className={getLinkClass("/projects")}
+                href="/projects"
+                onClick={() => {
+                  if (isMobile == true) {
+                    setIsOpen(!isOpen);
+                  }
+                }}
+              >
+                Projects
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={getLinkClass("/resume")}
+                href="/resume"
+                onClick={() => {
+                  if (isMobile == true) {
+                    setIsOpen(!isOpen);
+                  }
+                }}
+              >
+                Resume
+              </Link>
             </li>
             <li>
               <Link href="#">Contact</Link>
@@ -95,7 +132,7 @@ function Navbar() {
           <div
             onClick={() => {
               if (isMobile == true) {
-                setIsOpen(!isOpen)
+                setIsOpen(!isOpen);
               }
             }}
             className={`md:hidden flex flex-col justify-between w-[1.2rem] h-[1rem]`}
