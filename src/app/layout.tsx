@@ -4,6 +4,7 @@ import "./globals.css";
 import NavbarClient from "../components/ui/navbar-client";
 import React from "react";
 import { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ["latin"] });
 export const metadata : Metadata = {
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en" className="w-screen h-screen">
+      <Analytics />
       <body className={`font-generalSans overflow-x-hidden bg-black`}>
         {/* Hanya tampilkan Navbar & Footer jika bukan halaman admin */}
         <NavbarClient>{children}</NavbarClient>
