@@ -8,12 +8,12 @@ import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth"
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "irsyad-agung-hidayatullah.firebaseapp.com",
   projectId: "irsyad-agung-hidayatullah",
   storageBucket: "irsyad-agung-hidayatullah.appspot.com",
   messagingSenderId: "44331252675",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  appId: process.env.FIREBASE_APP_ID,
   measurementId: "G-GKG9PB9NLS",
 };
 

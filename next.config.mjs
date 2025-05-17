@@ -30,9 +30,9 @@ const nextConfig = {
     return config;
   },
   env: {
-    NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    NEXT_PUBLIC_REPO_API_GITHUB: process.env.NEXT_PUBLIC_REPO_API_GITHUB,
+    FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
+    FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
+    REPO_API_GITHUB: process.env.REPO_API_GITHUB,
   },
 };
 
