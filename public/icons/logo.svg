@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400"><style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&amp;display=swap');
+    text { font-family: 'Inter', sans-serif; font-size: 200px; font-weight: 700; }
+    .blue { fill: #0072B1; }
+    .gray { fill: #6E767D; }
+</style><text x="50" y="250"><tspan class="blue">S</tspan><tspan class="gray">yad.</tspan></text></svg>

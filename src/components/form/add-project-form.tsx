@@ -1,0 +1,379 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import { storage, firestore } from "../../../src/app/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
+
+import { ProjectModel } from "../../utils/project-model";
+
+type AddProjectFormProps = {
+    onSuccess: () => void;
+    isEdit: boolean;
+    project: ProjectModel | null;
+}
+
+export default function AddProjectForm({ onSuccess, isEdit, project }: AddProjectFormProps) {
+    const [type, setType] = useState("");
+      const [title, setTitle] = useState("");
+      const [description, setDescription] = useState("");
+      const [img, setImg] = useState<string>("");
+      const [githubLink, setGithubLink] = useState("");
+      const [linkDeploy, setLinkDeploy] = useState("");
+      const [position, setPosition] = useState("");
+      const [tasks, setTasks] = useState([""]);
+      const [tech, setTech] = useState([""]);
+      const [file, setFile] = useState<File | null>(null);
+    
+    useEffect(() => {
+        console.log("Edit project di popup", project);
+        console.log("isEdit", isEdit);
+      console.log("Project ID:", project?.id);
+
+        if (isEdit == true && project!== null) {
+
+            setType(project.type);
+            setTitle(project.title);
+            setDescription(project.description);
+            setImg(project.img);
+            setGithubLink(project.githubLink);
+            setLinkDeploy(project.linkDeploy);
+            setPosition(project.position);
+            setTasks(project.tasks || []);
+            setTech(project.tech || []);
+        } else {
+            // reset ke default kalau bukan edit
+            setType("");
+            setTitle("");
+            setDescription("");
+            setImg("");
+            setGithubLink("");
+            setLinkDeploy("");
+            setPosition("");
+            setTasks([""]);
+            setTech([""]);
+            setFile(null);
+        }
+    }, [isEdit, project]);
+
+    
+      const handleTechChange = (index: number, event: string) => {
+        const newTech = [...tech];
+        newTech[index] = event;
+        setTech(newTech);
+      };
+    
+      const handleAddTech = () => {
+        setTech([...tech, ""]);
+      };
+    
+      const handleDeleteTech = (index: number) => {
+        const newTech = tech.filter((_, idx) => idx !== index);
+        setTech(newTech);
+      };
+    
+      const handleTaskChange = (index: number, value: string) => {
+        const newTasks = [...tasks];
+        newTasks[index] = value;
+        setTasks(newTasks);
+      };
+    
+      const handleAddTask = () => {
+        setTasks([...tasks, ""]);
+      };
+    
+      const handleDeleteTask = (index: number) => {
+        const newTasks = tasks.filter((_, idx) => idx !== index);
+        setTasks(newTasks);
+      };
+    
+      const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+          setFile(e.target.files[0]);
+        }
+      };
+    
+      const handleUpload = () => {
+        if (file) {
+          const imageRef = ref(storage, `images/${file.name}`);
+          uploadBytes(imageRef, file).then((snapshot) => {
+            getDownloadURL(snapshot.ref).then((url) => {
+              setImg(url);
+              console.log("Image uploaded and available at:", url);
+            });
+          });
+        } else {
+          console.log("No image selected");
+        }
+      };
+    
+      const handleSubmit = async (event: React.ChangeEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const projectData = {
+          type,
+          title,
+          description,
+          img,
+          githubLink,
+          linkDeploy,
+          position,
+          tasks,
+          tech,
+        };
+        console.log("Project Data:", projectData);
+    
+        try {
+          const docRef = await addDoc(
+            collection(firestore, "projects"),
+            projectData
+          );
+          console.log("Document ID:", docRef.id);
+        } catch (error) {
+          console.log("Error adding document:", error);
+        }
+      };
+
+    function cleanData<T extends Record<string, any>>(data: T): Partial<T> {
+        const cleaned: Partial<T> = {};
+        for (const key in data) {
+            if (data[key] !== undefined) {
+                cleaned[key] = data[key];
+            }
+        }
+        return cleaned;
+    }
+
+
+    const handleEdit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const projectData = {
+            type,
+            title,
+            description,
+            img,
+            githubLink,
+            linkDeploy,
+            position,
+            tasks,
+            tech,
+        };
+
+        console.log("Project Data:", projectData);
+
+        try {
+            if (!project?.id) {
+                console.error("No project ID provided for update.");
+                return;
+            }
+
+
+            const projectRef = doc(firestore, "projects", project.id);
+            const safeData = cleanData(projectData); // Menghapus field yang undefined/null jika perlu
+
+            await updateDoc(projectRef, safeData);
+            console.log("Project updated successfully!");
+            onSuccess(); // Panggil fungsi onSuccess setelah berhasil mengupdate
+        } catch (error) {
+            console.error("Error updating project: ", error);
+        }
+    };
+
+    
+      return (
+        <section className="container py-16 flex flex-col items-center bg-gray-900 text-white">
+          <h1 className="text-4xl font-bold mb-8">Add Project</h1>
+          <div className="w-full p-8">
+            <form className="flex flex-col gap-6" onSubmit={isEdit ? handleEdit : handleSubmit}>
+              <div className="flex flex-col gap-1">
+                <label htmlFor="type" className="text-sm font-semibold">
+                  Project Type
+                </label>
+                <select
+                  id="type"
+                  onChange={(e) => setType(e.target.value)}
+                  value={type}
+                  className="bg-gray-700 border-b-2 border-gray-500 text-white p-3 rounded focus:border-blue-500"
+                >
+                  <option value="" disabled>
+                    Select Project Type
+                  </option>
+                  <option value="Website">Website</option>
+                  <option value="Mobile App">Mobile App</option>
+                  <option value="Desktop App">Desktop App</option>
+                </select>
+              </div>
+    
+              <div className="flex flex-col gap-1">
+                <label htmlFor="title" className="text-sm font-semibold">
+                  Title
+                </label>
+                <input
+                  id="title"
+                  type="text"
+                  placeholder="Project Title"
+                  onChange={(e) => setTitle(e.target.value)}
+                  value={title}
+                  className="bg-gray-700 border-b-2 border-gray-500 text-white p-3 rounded focus:border-blue-500"
+                />
+              </div>
+    
+              <div className="flex flex-col gap-1">
+                <label htmlFor="description" className="text-sm font-semibold">
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  placeholder="Project Description"
+                  onChange={(e) => setDescription(e.target.value)}
+                  value={description}
+                  className="bg-gray-700 border-b-2 border-gray-500 text-white p-3 rounded focus:border-blue-500 h-24"
+                />
+              </div>
+    
+              <div className="flex flex-col gap-1">
+                <label htmlFor="position" className="text-sm font-semibold">
+                  Position
+                </label>
+                <input
+                  id="position"
+                  type="text"
+                  placeholder="Your Position"
+                  onChange={(e) => setPosition(e.target.value)}
+                  value={position}
+                  className="bg-gray-700 border-b-2 border-gray-500 text-white p-3 rounded focus:border-blue-500"
+                />
+              </div>
+    
+              <div className="flex flex-col gap-1">
+                <label htmlFor="tasks" className="text-sm font-semibold">
+                  Tasks
+                </label>
+                {tasks.map((taskItem, idx) => (
+                  <div key={idx} className="flex gap-2 items-center">
+                    <input
+                      type="text"
+                      placeholder={`Task ${idx + 1}`}
+                      onChange={(e) => handleTaskChange(idx, e.target.value)}
+                      value={taskItem}
+                      className="bg-gray-700 border-b-2 border-gray-500 text-white p-3 rounded focus:border-blue-500 flex-1"
+                    />
+                    {idx !== 0 ? (
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteTask(idx)}
+                        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md"
+                      >
+                        Delete
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleAddTask}
+                        className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
+                      >
+                        Add
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+    
+              <div className="flex flex-col gap-1">
+                <label htmlFor="tech" className="text-sm font-semibold">
+                  Technologies
+                </label>
+                {tech.map((techItem, idx) => (
+                  <div key={idx} className="flex gap-2 items-center">
+                    <input
+                      type="text"
+                      placeholder={`Technology ${idx + 1}`}
+                      onChange={(e) => handleTechChange(idx, e.target.value)}
+                      value={techItem}
+                      className="bg-gray-700 border-b-2 border-gray-500 text-white p-3 rounded focus:border-blue-500 flex-1"
+                    />
+                    {idx !== 0 ? (
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteTech(idx)}
+                        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md"
+                      >
+                        Delete
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleAddTech}
+                        className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
+                      >
+                        Add
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+    
+              <div className="flex flex-col gap-1">
+                <label htmlFor="fileUpload" className="text-sm font-semibold">
+                  Project Image
+                </label>
+                <input
+                  id="fileUpload"
+                  type="file"
+                  onChange={handleImageChange}
+                  className="bg-gray-700 border-b-2 border-gray-500 text-white p-3 rounded"
+                />
+                <button
+                  type="button"
+                  onClick={handleUpload}
+                  className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-md mt-4"
+                >
+                  Upload Image
+                </button>
+                <input
+                  type="text"
+                  placeholder="Image URL"
+                  onChange={(e) => setImg(e.target.value)}
+                  value={img}
+                  className="bg-gray-700 border-b-2 border-gray-500 text-white p-3 rounded mt-2"
+                />
+              </div>
+    
+              <div className="flex flex-col gap-1">
+                <label htmlFor="githubLink" className="text-sm font-semibold">
+                  GitHub Link
+                </label>
+                <input
+                  id="githubLink"
+                  type="text"
+                  placeholder="GitHub Repository URL"
+                  onChange={(e) => setGithubLink(e.target.value)}
+                  value={githubLink}
+                  className="bg-gray-700 border-b-2 border-gray-500 text-white p-3 rounded focus:border-blue-500"
+                />
+              </div>
+    
+              <div className="flex flex-col gap-1">
+                <label htmlFor="linkDeploy" className="text-sm font-semibold">
+                  Deployment Link
+                </label>
+                <input
+                  id="linkDeploy"
+                  type="text"
+                  placeholder="Deployment URL"
+                  onChange={(e) => setLinkDeploy(e.target.value)}
+                  value={linkDeploy}
+                  className="bg-gray-700 border-b-2 border-gray-500 text-white p-3 rounded focus:border-blue-500"
+                />
+              </div>
+    
+              <button
+                type="submit"
+                className="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-md mt-6"
+              >
+                {isEdit ? "Update Project" : "Add Project"}
+              </button>
+            </form>
+          </div>
+        </section>
+      );
+}
