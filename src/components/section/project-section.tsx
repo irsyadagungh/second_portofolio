@@ -68,7 +68,7 @@ export function Projects() {
       return totalProjects;
     };
     handleTotalProject();
-  }, [projects]);
+  }, []);
 
   return (
     <>

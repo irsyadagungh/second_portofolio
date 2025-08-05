@@ -87,7 +87,7 @@ export default function Projects({onEditProject, isEdit}: Props) {
     };
 
     fetchProjects();
-  }, [projects]);
+  }, []);
 
   const selectedProjectData = projects.find(
     (project) => project.id === selectedProject
