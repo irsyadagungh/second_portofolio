@@ -322,9 +322,18 @@ export default function Projects({onEditProject, isEdit}: Props) {
                         {tech}
                       </span>
                     ))}
+                    
+                  </div>
+                  <div className={`w-full flex justify-start`}>
+                    <button
+                      className={`text-white border border-red-400 rounded-md px-2 py-1 hover:bg-red-400 duration-300`}
+                      onClick={() => setSelectedProject(null)}
+                    >
+                      Close
+                    </button>
                   </div>
                 </div>
-                <div className="flex flex-col gap-6 w-full md:w-1/2">
+                <div className="flex flex-col gap-6 w-full md:w-1/2 overflow-y-auto h-[500px]">
                   <div className="flex flex-col gap-4">
                     <h1 className="text-xl text-primary">Description</h1>
                     <p className="text-white font-light">
@@ -341,14 +350,7 @@ export default function Projects({onEditProject, isEdit}: Props) {
                       ))}
                     </ul>
                   </div>
-                  <div className={`w-full p-6 flex justify-end`}>
-                    <button
-                      className={`text-white border border-red-400 rounded-md px-2 py-1 hover:bg-red-400 duration-300`}
-                      onClick={() => setSelectedProject(null)}
-                    >
-                      Close
-                    </button>
-                  </div>
+                  
                 </div>
               </MagicCard>
             </motion.div>
